@@ -5,7 +5,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 Future <void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+        apiKey: "AIzaSyBpXV07Gz69lVPWcNfF9sspOhIrgKjkF8s",
+        appId: "1:659763173962:web:9bdaa395e1e9f5bd8564b3",
+        messagingSenderId: "659763173962",
+        projectId: "todo-app-2ef85")
+  );
   runApp(const MyApp());
 }
 

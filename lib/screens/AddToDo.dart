@@ -1,8 +1,8 @@
-import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddToDoPage extends StatefulWidget {
   const AddToDoPage({super.key,required this.email});
@@ -20,13 +20,14 @@ class _AddToDoPageState extends State<AddToDoPage> {
  // String email=email;
   @override
   Widget build(BuildContext context) {
+    var width=MediaQuery.of(context).size.width;
     return Scaffold(
         body: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors:[Colors.blueGrey,Colors.white]
+              colors:[Colors.black,Colors.pinkAccent]
             ),
 
           ),
@@ -45,62 +46,62 @@ class _AddToDoPageState extends State<AddToDoPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                        Text("Create",
-                          style: TextStyle(
-                            fontSize: 33,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 4,
-                          ),),
-                      SizedBox(height: 8,),
-                      Text("New Todo",
-                        style: TextStyle(
-                          fontSize: 33,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 4,
-                        ),),
-                      SizedBox(height: 25,),
-                      label("Task Title"),
-                      SizedBox(height: 15,),
-                      title(),
-                      SizedBox(height: 30,),
-                      label("Task Type"),
-                      SizedBox(height: 10,),
-                      Row(
+                  child: Center(
+                    child: Container(
+                      width: width>1000?800:null,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          taskSelect("Important",0xff2664fa),
-                          SizedBox(width: 20,),
-                          taskSelect("Planned", 0xff2bc8d9)
-                        ],
-                      ),
-                      SizedBox(height: 15,),
-                      label("Description"),
-                      SizedBox(height: 10,),
-                      description(),
-                      SizedBox(height: 15,),
-                      label("Category"),
-                      SizedBox(height: 15,),
-                      Wrap(
-                        children: [
-                          categorySelect("Food",0xffff646e),
-                          SizedBox(width: 20,),
-                          categorySelect("WorkOut",0xfff29732),
-                          SizedBox(width: 20,),
-                          categorySelect("Work", 0xff6557ff),
-                          SizedBox(width: 20,),
-                          categorySelect("Design", 0xff234ebd),
-                          SizedBox(width: 20,),
-                          categorySelect("Run", 0xff2bc8d9),
-                        ],
-                      ),
-                      SizedBox(height: 20,),
-                      button()
+                            Text("Create",
+                              style: TextStyle(
+                                fontSize: 33,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                letterSpacing: 4,
+                              ),),
+                          SizedBox(height: 8,),
+                          Text("New Todo",
+                            style: TextStyle(
+                              fontSize: 33,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 4,
+                            ),),
+                          SizedBox(height: 25,),
+                          label("Task Title"),
+                          SizedBox(height: 15,),
+                          title(),
+                          SizedBox(height: 30,),
+                          label("Task Type"),
+                          SizedBox(height: 10,),
+                          Row(
+                            children: [
+                              taskSelect("Important",0xff2664fa),
+                              taskSelect("Planned", 0xff2bc8d9)
+                            ],
+                          ),
+                          SizedBox(height: 15,),
+                          label("Description"),
+                          SizedBox(height: 10,),
+                          description(),
+                          SizedBox(height: 15,),
+                          label("Category"),
+                          SizedBox(height: 15,),
+                          Wrap(
+                            children: [
+                              categorySelect("Food",0xffff646e),
+                              categorySelect("WorkOut",0xfff29732),
+                              categorySelect("Work", 0xff6557ff),
+                              categorySelect("Design", 0xff234ebd),
+                              categorySelect("Run", 0xff2bc8d9),
+                            ],
+                          ),
+                          SizedBox(height: 20,),
+                          button()
 
-                    ],
+                        ],
+                      ),
+                    ),
                   ),
                 )
               ],
@@ -122,13 +123,13 @@ class _AddToDoPageState extends State<AddToDoPage> {
             "check":"false"
             }
         );
+        Fluttertoast.showToast(msg: "Added successfully");
         Navigator.pop(context);
       },
       child: Container(
         height: 50,
-        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Colors.black,
             borderRadius: BorderRadius.circular(20),
         ),
         child: Center(child: Text("Submit",style: TextStyle(
@@ -142,9 +143,8 @@ class _AddToDoPageState extends State<AddToDoPage> {
   Widget description(){
     return Container(
       height: 155,
-      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-          color: Colors.black26,
+          color: Colors.grey.withOpacity(0.2),
           borderRadius: BorderRadius.circular(15)
       ),
       child: TextFormField(
@@ -173,17 +173,20 @@ class _AddToDoPageState extends State<AddToDoPage> {
             category = label;
           });
         },
-      child: Chip(
-        backgroundColor: category==label?Colors.black87:Color(color),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10)
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Chip(
+          backgroundColor: category==label?Colors.black87:Color(color),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)
+          ),
+          label: Text(label,style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+            fontWeight: FontWeight.w600
+          ),),
+          labelPadding: EdgeInsets.symmetric(horizontal: 17,vertical: 3.8),
         ),
-        label: Text(label,style: TextStyle(
-            color: Colors.white,
-            fontSize: 15,
-          fontWeight: FontWeight.w600
-        ),),
-        labelPadding: EdgeInsets.symmetric(horizontal: 17,vertical: 3.8),
       ),
     );
   }
@@ -195,26 +198,28 @@ class _AddToDoPageState extends State<AddToDoPage> {
 
         });
       },
-      child: Chip(
-        backgroundColor: type==label?Colors.black87:Color(color),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10)
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Chip(
+          backgroundColor: type==label?Colors.black87:Color(color),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)
+          ),
+          label: Text(label,style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w600
+          ),),
+          labelPadding: EdgeInsets.symmetric(horizontal: 17,vertical: 3.8),
         ),
-        label: Text(label,style: TextStyle(
-            color: Colors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.w600
-        ),),
-        labelPadding: EdgeInsets.symmetric(horizontal: 17,vertical: 3.8),
       ),
     );
   }
   Widget title(){
     return Container(
       height: 55,
-      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-          color: Colors.black26,
+          color: Colors.grey.withOpacity(0.2),
           borderRadius: BorderRadius.circular(15)
       ),
       child: TextFormField(

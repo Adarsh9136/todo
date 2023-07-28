@@ -27,7 +27,7 @@ class _TodoCardState extends State<TodoCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.all(10),
       child: Row(
         children: [
           Theme(
@@ -37,8 +37,8 @@ class _TodoCardState extends State<TodoCard> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5)
                   ),
-                  activeColor: Color(0xff6cf8a9),
-                  checkColor: Color(0xff0e3e26),
+                  activeColor: Colors.blue,
+                  checkColor: Colors.white,
                   value: widget.check=="true"?true:false,
                   onChanged: (value){
                         setState(() {

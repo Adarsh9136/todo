@@ -40,22 +40,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var width=MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: "My Todo List".text.bold.amber50.xl4.make().shimmer(
-            primaryColor:Colors.purple,
-            secondaryColor:Colors.white,
-          ),
+          backgroundColor: Colors.black,
+          elevation: 2,
+          title: Text("My ToDo List",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 24),)
       ),
         
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.black,
           items: [
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.home,
                 size:32,
-                color: Colors.black87,
+                color: Colors.grey,
               ),
               label: ""
             ),
@@ -66,12 +66,12 @@ class _HomePageState extends State<HomePage> {
                     width: 52,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.blue
+                      color: Colors.white
                     ),
                     child: Icon(
                       Icons.add,
                       size:32,
-                      color: Colors.white,
+                      color: Colors.grey,
                     ),
                   ),
                   onTap: (){
@@ -88,11 +88,10 @@ class _HomePageState extends State<HomePage> {
                   child: Icon(
                     Icons.logout,
                     size:32,
-                    color: Colors.black87,
+                    color: Colors.white,
                   ),
                   onTap: (){
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>LoginPage()));
-                    Fluttertoast.showToast(msg: "Logout Successfully");
+                    logout(context);
                   },
                 ),
                 label: ""
@@ -101,80 +100,78 @@ class _HomePageState extends State<HomePage> {
         ),
         drawer:Drawer(
           backgroundColor: Colors.white,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 200,
-                  child: Image.asset("assets/images/man.png",
-                    fit: BoxFit.contain,),
-                ),
-                Container(
-                    padding: EdgeInsets.fromLTRB(10, 5, 5, 5),
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.blue,
-                    height: 40,
-                    child: Row(
-                      children: [
-                        Icon(Icons.person),
-                        SizedBox(width: 10,),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text("${loggedInUser.firstName} ${loggedInUser.lastName}",style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20
-                            ),),
-                          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 200,
+                child: Image.asset("assets/images/man.png",
+                  fit: BoxFit.contain,),
+              ),
+              Container(
+                  padding: EdgeInsets.fromLTRB(10, 5, 5, 5),
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.black54,
+                  height: 40,
+                  child: Row(
+                    children: [
+                      Icon(Icons.person),
+                      SizedBox(width: 10,),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Text("${loggedInUser.firstName} ${loggedInUser.lastName}",style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20
+                          ),),
                         ),
-                        Icon(Icons.verified_user_outlined,color: Colors.green,),
-                      ],
-                    )
-                ),
-                Container(
+                      ),
+                      Icon(Icons.verified_user_outlined,color: Colors.green,),
+                    ],
+                  )
+              ),
+              Container(
+                  padding: EdgeInsets.fromLTRB(10, 5, 5, 0),
+                  width: MediaQuery.of(context).size.width,
+                  height: 40,
+                  child: Row(
+                    children: [
+                      Icon(Icons.email),
+                      SizedBox(width: 10,),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Text("${loggedInUser.email}",style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20
+                          ),),
+                        ),
+                      ),
+                    ],
+                  )
+              ),
+              Divider(thickness: 1,color: Colors.grey,),
+              GestureDetector(
+                onTap: (){
+                  logout(context);
+                },
+                child: Container(
                     padding: EdgeInsets.fromLTRB(10, 5, 5, 0),
                     width: MediaQuery.of(context).size.width,
                     height: 40,
                     child: Row(
                       children: [
-                        Icon(Icons.email),
+                        Icon(Icons.logout),
                         SizedBox(width: 10,),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text("${loggedInUser.email}",style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20
-                            ),),
-                          ),
-                        ),
+                        Text("Logout",style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20
+                        ),),
                       ],
                     )
                 ),
-                Divider(thickness: 1,color: Colors.grey,),
-                GestureDetector(
-                  onTap: (){
-                    logout(context);
-                  },
-                  child: Container(
-                      padding: EdgeInsets.fromLTRB(10, 5, 5, 0),
-                      width: MediaQuery.of(context).size.width,
-                      height: 40,
-                      child: Row(
-                        children: [
-                          Icon(Icons.logout),
-                          SizedBox(width: 10,),
-                          Text("Logout",style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20
-                          ),),
-                        ],
-                      )
-                  ),
-                ),
-                Divider(thickness: 1,color: Colors.grey,),
-              ],
-            ),
+              ),
+              Divider(thickness: 1,color: Colors.grey,),
+            ],
           ),
         ),
       body:   StreamBuilder<Object>(
@@ -183,58 +180,69 @@ class _HomePageState extends State<HomePage> {
             if(!snapshot.hasData){
               return CircularProgressIndicator();
             }
-            return ListView.builder(
-              itemCount: snapshot.data.docs.length,
-              itemBuilder: (context,index){
-                IconData iconData;
-                Color iconColor;
-                Map<String,dynamic> document =snapshot.data.docs[index].data() as Map<String,dynamic>;
-                switch(document["category"]){
-                  case "Work":
-                      iconData=Icons.work_history_outlined;
-                      iconColor=Colors.black87;
-                      break;
-                  case "Food":
-                    iconData=Icons.fastfood_rounded;
-                    iconColor=Colors.amber;
-                    break;
-                  case "WorkOut":
-                    iconData=Icons.run_circle_rounded;
-                    iconColor=Colors.red;
-                    break;
-                  case "Design":
-                    iconData=Icons.draw;
-                    iconColor=Colors.blue;
-                    break;
-                  case "Run":
-                    iconData=Icons.run_circle_outlined;
-                    iconColor=Colors.green;
-                    break;
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors:[Colors.black54,Colors.black]
+                ),),
+              child: Center(
+                child: Container(
+                  width: width>100?800:null,
+                  child: ListView.builder(
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (context,index){
+                      IconData iconData;
+                      Color iconColor;
+                      Map<String,dynamic> document =snapshot.data.docs[index].data() as Map<String,dynamic>;
+                      switch(document["category"]){
+                        case "Work":
+                            iconData=Icons.work_history_outlined;
+                            iconColor=Colors.black87;
+                            break;
+                        case "Food":
+                          iconData=Icons.fastfood_rounded;
+                          iconColor=Colors.amber;
+                          break;
+                        case "WorkOut":
+                          iconData=Icons.run_circle_rounded;
+                          iconColor=Colors.red;
+                          break;
+                        case "Design":
+                          iconData=Icons.draw;
+                          iconColor=Colors.blue;
+                          break;
+                        case "Run":
+                          iconData=Icons.run_circle_outlined;
+                          iconColor=Colors.green;
+                          break;
 
-                  default:
-                      iconData=Icons.arrow_circle_left_rounded;
-                      iconColor=Colors.black87;
-                    break;
-                }
-                return loggedInUser.email==document["email"]?InkWell(
-                  onTap: (){
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (builder)=> ViewData(
-                            document:document,id: snapshot.data.docs[index].id
-                        )));
+                        default:
+                            iconData=Icons.arrow_circle_left_rounded;
+                            iconColor=Colors.black87;
+                          break;
+                      }
+                      return loggedInUser.email==document["email"]?InkWell(
+                        onTap: (){
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (builder)=> ViewData(
+                                  document:document,id: snapshot.data.docs[index].id
+                              )));
+                        },
+                        child: TodoCard(
+                          title: document["title"]==null?"Untitled":document["title"],
+                          iconData: iconData,
+                          iconColor: iconColor,
+                          time: "9 AM",
+                          check:document["check"]=="true"?"true":"false",
+                          iconBgColor: Colors.red,
+                          id: snapshot.data.docs[index].id
+                        ),
+                      ):SizedBox(height: 0,);
                   },
-                  child: TodoCard(
-                    title: document["title"]==null?"Untitled":document["title"],
-                    iconData: iconData,
-                    iconColor: iconColor,
-                    time: "9 AM",
-                    check:document["check"]=="true"?"true":"false",
-                    iconBgColor: Colors.red,
-                    id: snapshot.data.docs[index].id
-                  ),
-                ):SizedBox(height: 0,);
-            },
 
+                  ),
+                ),
+              ),
             );
         }
       ),
@@ -243,7 +251,9 @@ class _HomePageState extends State<HomePage> {
   }
   Future<void> logout(BuildContext context) async{
     await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>LoginPage()));
+    Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+            (route) => false);
     Fluttertoast.showToast(msg: "Logout Successfully");
   }
 }

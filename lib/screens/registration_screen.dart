@@ -26,6 +26,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   bool isLoading=false;
   @override
   Widget build(BuildContext context) {
+    var width=MediaQuery.of(context).size.width;
 
     final firstNameField = TextFormField(
       autofocus: false,
@@ -157,7 +158,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     final signUpButton = Material(
       elevation: 5,
       borderRadius: BorderRadius.circular(30),
-      color: Colors.blue,
+      color: Colors.black,
       child: MaterialButton(
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         minWidth: MediaQuery
@@ -165,9 +166,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
             .size
             .width,
         onPressed: () {
-          setState(() {
-            isLoading=true;
-          });
             signUp(emailNameEditingController.text, passwordEditingController.text);
         },
         child: isLoading==true?CircularProgressIndicator(color: Colors.white,):Text("SignUp",
@@ -191,49 +189,53 @@ class _RegistrationPageState extends State<RegistrationPage> {
               padding: const EdgeInsets.all(36.0),
               child: Form(
                   key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 200,
-                        child: Image.asset("assets/images/man.png",
-                          fit: BoxFit.contain,),
-                      ),
-                      SizedBox(height: 45),
-                      firstNameField,
-                      SizedBox(height: 25),
-                      lastNameField,
-                      SizedBox(height: 25),
-                      emailField,
-                      SizedBox(height: 25),
-                      passwordField,
-                      SizedBox(height: 25),
-                      confirmPasswordField,
-                      SizedBox(height: 35),
-                      signUpButton,
-                      SizedBox(height: 15),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text("Have an account? ", style: TextStyle(
-                              fontSize: 15
-                          ),),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text("Login", style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold
+                  child: Container(
+                    width: width>100?500:null,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 200,
+                          child: Image.asset("assets/images/man.png",
+                            fit: BoxFit.contain,),
+                        ),
+                        SizedBox(height: 45),
+                        firstNameField,
+                        SizedBox(height: 25),
+                        lastNameField,
+                        SizedBox(height: 25),
+                        emailField,
+                        SizedBox(height: 25),
+                        passwordField,
+                        SizedBox(height: 25),
+                        confirmPasswordField,
+                        SizedBox(height: 35),
+                        signUpButton,
+                        SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Have an account? ", style: TextStyle(
+                                fontSize: 15
                             ),),
-                          )
 
-                        ],
-                      )
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text("Login", style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold
+                              ),),
+                            )
 
-                    ],
+                          ],
+                        )
+
+                      ],
+                    ),
                   )
               ),
             ),
@@ -244,6 +246,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   }
   void signUp(String email, String password) async {
+    setState(() {
+      isLoading=true;
+    });
     if (_formKey.currentState!.validate()) {
       await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
@@ -252,6 +257,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
         Fluttertoast.showToast(msg: e!.message);
       });
     }
+    setState(() {
+      isLoading=false;
+    });
   }
   postDetailsToFirestore() async{
     //calling our firestore

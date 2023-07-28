@@ -1,8 +1,8 @@
-import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ViewData extends StatefulWidget {
   const ViewData({super.key,required this.document,required this.id});
@@ -34,13 +34,14 @@ class _ViewDataState extends State<ViewData> {
   }
   @override
   Widget build(BuildContext context) {
+    var width=MediaQuery.of(context).size.width;
     return Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors:[Colors.blue,Colors.black26]
+              colors:[Colors.black,edit?Colors.pinkAccent:Colors.deepPurple]
           ),
 
         ),
@@ -63,12 +64,13 @@ class _ViewDataState extends State<ViewData> {
                   IconButton(onPressed: (){
                     setState(() {
                       if(edit==false) edit=true;
+                      else edit=false;
                     });
 
                   },
                       icon: Icon(Icons.edit,
 
-                        color: edit==false?Colors.white:Colors.red,
+                        color: edit==false?Colors.white:Colors.black,
                         size: 30,
                       )
                   ),
@@ -76,62 +78,62 @@ class _ViewDataState extends State<ViewData> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(edit==false?"View":"Edit",
-                      style: TextStyle(
-                        fontSize: 33,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 4,
-                      ),),
-                    SizedBox(height: 8,),
-                    Text("Your Todo",
-                      style: TextStyle(
-                        fontSize: 33,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 4,
-                      ),),
-                    SizedBox(height: 25,),
-                    label("Task Title"),
-                    SizedBox(height: 15,),
-                    title(),
-                    SizedBox(height: 30,),
-                    label("Task Type"),
-                    SizedBox(height: 10,),
-                    Row(
+                child: Center(
+                  child: Container(
+                    width: width>1000?800:null,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        taskSelect("Important",0xff2664fa),
-                        SizedBox(width: 20,),
-                        taskSelect("Planned", 0xff2bc8d9)
-                      ],
-                    ),
-                    SizedBox(height: 15,),
-                    label("Description"),
-                    SizedBox(height: 10,),
-                    description(),
-                    SizedBox(height: 15,),
-                    label("Category"),
-                    SizedBox(height: 15,),
-                    Wrap(
-                      children: [
-                        categorySelect("Food",0xffff646e),
-                        SizedBox(width: 20,),
-                        categorySelect("WorkOut",0xfff29732),
-                        SizedBox(width: 20,),
-                        categorySelect("Work", 0xff6557ff),
-                        SizedBox(width: 20,),
-                        categorySelect("Design", 0xff234ebd),
-                        SizedBox(width: 20,),
-                        categorySelect("Run", 0xff2bc8d9),
-                      ],
-                    ),
-                    SizedBox(height: 20,),
-                    edit==false?Text(""):button()
+                        Text(edit==false?"View":"Edit",
+                          style: TextStyle(
+                            fontSize: 33,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 4,
+                          ),),
+                        SizedBox(height: 8,),
+                        Text("Your Todo",
+                          style: TextStyle(
+                            fontSize: 33,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 4,
+                          ),),
+                        SizedBox(height: 25,),
+                        label("Task Title"),
+                        SizedBox(height: 15,),
+                        title(),
+                        SizedBox(height: 30,),
+                        label("Task Type"),
+                        SizedBox(height: 10,),
+                        Row(
+                          children: [
+                            taskSelect("Important",0xff2664fa),
+                            taskSelect("Planned", 0xff2bc8d9)
+                          ],
+                        ),
+                        SizedBox(height: 15,),
+                        label("Description"),
+                        SizedBox(height: 10,),
+                        description(),
+                        SizedBox(height: 15,),
+                        label("Category"),
+                        SizedBox(height: 15,),
+                        Wrap(
+                          children: [
+                            categorySelect("Food",0xffff646e),
+                            categorySelect("WorkOut",0xfff29732),
+                            categorySelect("Work", 0xff6557ff),
+                            categorySelect("Design", 0xff234ebd),
+                            categorySelect("Run", 0xff2bc8d9),
+                          ],
+                        ),
+                        SizedBox(height: 20,),
+                        edit==false?Text(""):button()
 
-                  ],
+                      ],
+                    ),
+                  ),
                 ),
               )
             ],
@@ -152,13 +154,13 @@ class _ViewDataState extends State<ViewData> {
               //"email"=email;
             }
         );
+        Fluttertoast.showToast(msg: "Updated successfully");
         Navigator.pop(context);
       },
       child: Container(
         height: 50,
-        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          color: Colors.blue,
+          color: Colors.black,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(child: Text("Update",style: TextStyle(
@@ -172,9 +174,8 @@ class _ViewDataState extends State<ViewData> {
   Widget description(){
     return Container(
       height: 155,
-      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-          color: Colors.black26,
+          color: Colors.grey.withOpacity(0.2),
           borderRadius: BorderRadius.circular(15)
       ),
       child: TextFormField(
@@ -204,17 +205,20 @@ class _ViewDataState extends State<ViewData> {
           edit==false?null:category=label;
         });
       },
-      child: Chip(
-        backgroundColor: category==label?Colors.white:Color(color),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10)
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Chip(
+          backgroundColor: category==label?Colors.white:Color(color),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)
+          ),
+          label: Text(label,style: TextStyle(
+              color: category==label?Colors.black:Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w600
+          ),),
+          labelPadding: EdgeInsets.symmetric(horizontal: 17,vertical: 3.8),
         ),
-        label: Text(label,style: TextStyle(
-            color: category==label?Colors.black:Colors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.w600
-        ),),
-        labelPadding: EdgeInsets.symmetric(horizontal: 17,vertical: 3.8),
       ),
     );
   }
@@ -226,26 +230,28 @@ class _ViewDataState extends State<ViewData> {
 
         });
       },
-      child: Chip(
-        backgroundColor: type==label?Colors.white:Color(color),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10)
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Chip(
+          backgroundColor: type==label?Colors.white:Color(color),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10)
+          ),
+          label: Text(label,style: TextStyle(
+              color: type==label?Colors.black:Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.w600
+          ),),
+          labelPadding: EdgeInsets.symmetric(horizontal: 17,vertical: 3.8),
         ),
-        label: Text(label,style: TextStyle(
-            color: type==label?Colors.black:Colors.white,
-            fontSize: 15,
-            fontWeight: FontWeight.w600
-        ),),
-        labelPadding: EdgeInsets.symmetric(horizontal: 17,vertical: 3.8),
       ),
     );
   }
   Widget title(){
     return Container(
       height: 55,
-      width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-          color: Colors.black26,
+          color: Colors.grey.withOpacity(0.2),
           borderRadius: BorderRadius.circular(15)
       ),
       child: TextFormField(

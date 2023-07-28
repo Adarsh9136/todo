@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading=false;
   @override
   Widget build(BuildContext context) {
+    var width=MediaQuery.of(context).size.width;
     final emailField = TextFormField(
       autofocus: false,
       controller: emailController,
@@ -81,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
     final loginButton = Material(
       elevation: 5,
       borderRadius: BorderRadius.circular(30),
-      color: Colors.blue,
+      color: Colors.black,
       child: MaterialButton(
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         minWidth: MediaQuery
@@ -91,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () {
           signIn(emailController.text, passwordController.text);
         },
-        child: Text("Login",
+        child: isLoading?CircularProgressIndicator(color: Colors.white,):Text("Login",
           textAlign: TextAlign.center,
           style: TextStyle(
               color: Colors.white,
@@ -107,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: SingleChildScrollView(
           child: Container(
+            width: width>100?500:null,
             color: Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(36.0),
@@ -144,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                               }
                             },
                             child: Text("Forget password", style: TextStyle(
-                                color: Colors.blue,
+                                color: Colors.black,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold
                             ),),
@@ -160,14 +162,11 @@ class _LoginPageState extends State<LoginPage> {
                           ),),
                           GestureDetector(
                             onTap: () {
-                              setState(() {
-                                isLoading=true;
-                              });
                               Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => RegistrationPage()));
                             },
-                            child: isLoading==true?CircularProgressIndicator(color: Colors.white,):Text("SignUp", style: TextStyle(
-                                color: Colors.blue,
+                            child: Text("SignUp", style: TextStyle(
+                                color: Colors.black,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold
                             ),),
@@ -188,16 +187,26 @@ class _LoginPageState extends State<LoginPage> {
 
   //login function
   Future<void> signIn(String email, String password) async {
+    setState(() {
+      isLoading=true;
+    });
     if (_formKey.currentState!.validate()) {
       await _auth.signInWithEmailAndPassword(email: email, password: password)
           .then((uid) =>
       {
         Fluttertoast.showToast(msg: "Login Successfully"),
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => HomePage()))
+          Navigator.pushAndRemoveUntil(context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+              (route) => false)
       }).catchError((e) {
+        setState(() {
+          isLoading=false;
+        });
         Fluttertoast.showToast(msg: e!.message);
       });
     }
+    setState(() {
+      isLoading=false;
+    });
   }
 }
